@@ -1,0 +1,130 @@
+{% extends 'authsystem/base.html' %}
+{% load static %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-purple text-white">
+                <h4 class="mb-0">Register</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    
+                    <!-- Username Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+                        {{ form.username }}
+                        {{ form.username.errors }}
+                    </div>
+                    
+                    <!-- First Name and Last Name Fields -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                            {{ form.first_name }}
+                            {{ form.first_name.errors }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                            {{ form.last_name }}
+                            {{ form.last_name.errors }}
+                        </div>
+                    </div>
+                    
+                    <!-- Telephone Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.telephone.id_for_label }}" class="form-label">Telephone</label>
+                        {{ form.telephone }}
+                        <small class="form-text text-muted">{{ form.telephone.help_text }}</small>
+                        {{ form.telephone.errors }}
+                    </div>
+                    
+                    <!-- ID Number Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.id_number.id_for_label }}" class="form-label">ID Number</label>
+                        {{ form.id_number }}
+                        {{ form.id_number.errors }}
+                    </div>
+                    
+                    <!-- Password Field with Validation -->
+                    <div class="mb-3">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label">Password</label>
+                        {{ form.password1 }}
+                        <div id="password-requirements" class="mt-2">
+                            <small class="text-muted">Password must contain:</small>
+                            <ul class="list-unstyled">
+                                <li id="req-length"><i class="bi bi-x-circle-fill text-danger"></i> 8+ characters</li>
+                                <li id="req-letter"><i class="bi bi-x-circle-fill text-danger"></i> 1+ letter</li>
+                                <li id="req-number"><i class="bi bi-x-circle-fill text-danger"></i> 1+ number</li>
+                                <li id="req-special"><i class="bi bi-x-circle-fill text-danger"></i> 1+ special character</li>
+                            </ul>
+                        </div>
+                        {{ form.password1.errors }}
+                    </div>
+                    
+                    <!-- Password Confirmation Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm Password</label>
+                        {{ form.password2 }}
+                        {{ form.password2.errors }}
+                    </div>
+                    
+                    <button type="submit" class="btn btn-purple w-100">Register</button>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                Already have an account? <a href="{% url 'login' %}">Login here</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Password Validation Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('{{ form.password1.id_for_label }}');
+    const requirements = {
+        length: document.getElementById('req-length'),
+        letter: document.getElementById('req-letter'),
+        number: document.getElementById('req-number'),
+        special: document.getElementById('req-special')
+    };
+    
+    function validatePassword(value) {
+        const checks = {
+            length: value.length >= 8,
+            letter: /[a-zA-Z]/.test(value),
+            number: /\d/.test(value),
+            special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value)
+        };
+        
+        Object.keys(checks).forEach(key => {
+            const icon = requirements[key].querySelector('i');
+            icon.className = checks[key] 
+                ? 'bi bi-check-circle-fill text-success' 
+                : 'bi bi-x-circle-fill text-danger';
+        });
+    }
+    
+    passwordInput.addEventListener('input', function() {
+        validatePassword(this.value);
+    });
+    
+    if (passwordInput.value) {
+        validatePassword(passwordInput.value);
+    }
+});
+</script>
+
+<style>
+#password-requirements {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+#password-requirements li {
+    margin-bottom: 0.2rem;
+}
+</style>
+{% endblock %}
